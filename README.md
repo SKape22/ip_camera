@@ -15,3 +15,12 @@ cd ./bknd
 npm i
 npm run start-ts
 ```
+
+### Localhost Stream
+***
+```
+
+cd ./ipstream
+pip install opencv-python Flask
+python ipcam.py
+```
