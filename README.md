@@ -19,8 +19,12 @@ npm run start-ts
 ### Localhost Stream
 ***
 ```
+VLC->Media->Stream
+```
 
-cd ./ipstream
-pip install opencv-python Flask
-python ipcam.py
+### RTSP Server
+***
+```
+cd ./rtsp-server
+docker compose up
 ```

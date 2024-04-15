@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml:ro  # Mount your local mediamtx.yml file
+
+  # rclone:
+  #   image: rclone/rclone:latest
+  #   command: config
+    # volumes:
+    #   - /path/to/host/config:/config/rclone
+    #   - /path/to/host/data:/data

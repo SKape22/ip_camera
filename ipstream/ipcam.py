@@ -1,59 +1,32 @@
-import cv2
-from flask import Flask, Response
+import subprocess
 
-# Initialize Flask application
-app = Flask(__name__)
+# Replace these with your desired settings
+webcam_device = 'HD User Facing'  # Adjust if your webcam has a different device number
+rtsp_port = 8554  # You can change this port if needed
+stream_path = "mystream"  # Customize the path in the RTSP URL
 
-def generate_frames():
-    # Capture video from the webcam
-    cap = cv2.VideoCapture(0)
+# Build the ffmpeg command for RTSP streaming
+ffmpeg_cmd = [
+    "ffmpeg",
+    "-f", "dshow",  # Use dshow for Windows
+    "-i", f"video={webcam_device}",  # Device name for dshow
+    "-pix_fmt", "yuv420p",
+    "-c:v", "libx264",
+    "-preset", "ultrafast",  # Adjust encoding speed (faster preset)
+    "-b:v", "9600k",  # Lower bitrate
+    "-rtbufsize", "1024M",  # Increase buffer size
+    "-f", "rtsp",
+    f"rtsp://localhost:{rtsp_port}/{stream_path}"
+]
 
-    # Check if the webcam is opened correctly
-    if not cap.isOpened():
-        print("Error: Could not open webcam.")
-        return
+# Start the streaming process using subprocess
+process = subprocess.Popen(ffmpeg_cmd)
 
-    # Set codec and video parameters
-    codec = cv2.VideoWriter_fourcc(*'XVID')
-    fps = 20
-    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-    # Create VideoWriter object for RTSP streaming
-    out = cv2.VideoWriter("rtsp://127.0.0.1:8554/test", codec, fps, (frame_width, frame_height))
-
+# Keep the script running while ffmpeg streams
+try:
     while True:
-        ret, frame = cap.read()
-
-        if not ret:
-            print("Error: Failed to receive frame.")
-            break
-
-        # Write frame to VideoWriter object
-        out.write(frame)
-
-        # Encode the frame in JPEG format
-        ret, buffer = cv2.imencode('.jpg', frame)
-
-        if not ret:
-            print("Error: Failed to encode frame.")
-            break
-
-        # Convert the frame to bytes
-        frame_bytes = buffer.tobytes()
-
-        # Yield the frame in bytes
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
-
-    # Release resources
-    cap.release()
-    out.release()
-
-@app.route('/')
-def index():
-    # Return the streaming response
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-if __name__ == "__main__":
-    app.run(debug=True)
+        process.wait()  # Wait for ffmpeg to finish (should never reach here)
+except KeyboardInterrupt:
+    # Exit script on keyboard interrupt (Ctrl+C)
+    process.terminate()
+    print("Streaming stopped!")
