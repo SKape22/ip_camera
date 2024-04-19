@@ -21,8 +21,8 @@ services:
     volumes:
       - ./mediamtx.yml:/mediamtx.yml:ro  # Mount your local mediamtx.yml file
 
-volumes:
-  live_server_data:
+# volumes:
+#   live_server_data:
 
   # rclone:
   #   image: rclone/rclone:latest

@@ -42,6 +42,28 @@ app.post('/publish', async (request: FastifyRequest<{ Body: PublishRequest }>, r
     }
 });
 
+app.get('/paths', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+        const response = await axios.get('http://localhost:9997/v3/paths/list');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching paths:', error);
+        reply.code(500).send({ error: 'Internal Server Error' });
+    }
+});
+
+// Add a new route to forward requests to http://localhost:9996
+app.get('/forward', async (request: FastifyRequest<{ Querystring: { path: string } }>, reply: FastifyReply) => {
+    try {
+        const { path } = request.query;
+        const response = await axios.get(`http://localhost:9996/list?path=${encodeURIComponent(path)}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error forwarding request:', error);
+        reply.code(500).send({ error: 'Internal Server Error' });
+    }
+});
+
 const ADDRESS = '127.0.0.1';
 const PORT = '3000';
 

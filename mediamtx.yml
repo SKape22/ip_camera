@@ -144,7 +144,7 @@
   # Global settings -> Playback server
 
   # Enable downloading recordings from the playback server.
-  playback: no
+  playback: yes
   # Address of the playback server listener.
   playbackAddress: :9996
 
@@ -374,7 +374,7 @@
     # Default path settings -> Record and playback
 
     # Record streams to disk.
-    record: no
+    record: yes
     # Enable serving recordings with the playback server.
     playback: yes
     # Path of recording segments.
@@ -525,7 +525,7 @@
     # * RTSP_PORT: RTSP server port
     # * G1, G2, ...: regular expression groups, if path name is
     #   a regular expression.
-    runOnInit:
+    # runOnInit: rclone sync -v ./recordings brainwave:/my-path/recordings
     # Restart the command if it exits.
     runOnInitRestart: no
 
@@ -603,7 +603,8 @@
     # * G1, G2, ...: regular expression groups, if path name is
     #   a regular expression.
     # * MTX_SEGMENT_PATH: segment file path
-    runOnRecordSegmentComplete:
+    runOnRecordSegmentComplete: 
+    # rclone sync -v --min-age=1ms ./recordings brainwave:/my-path/recordings
 
   ###############################################
   # Path settings
@@ -622,4 +623,8 @@
 
     # Settings under path "all_others" are applied to all paths that
     # do not match another entry.
+    
+    # my_specific_path:
+    #   source: publisher
+    #   runOnInit: C:/Users/sattu/Downloads/rclone-v1.66.0-windows-amd64/rclone-v1.66.0-windows-amd64/rclone.exe sync -v ./recordings brainwave:/my-path/recordings
     all_others:
