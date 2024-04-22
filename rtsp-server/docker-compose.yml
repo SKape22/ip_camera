@@ -6,13 +6,15 @@ services:
     container_name: mediamtx-rtmpserver
     environment: 
       MTX_PROTOCOLS: tcp
-      MTX_WEBRTCADDITIONALHOSTS: "x.x.x.x"
+      MTX_WEBRTCADDITIONALHOSTS: "127.0.0.1"
       RTSP_API: yes
     ports:
       - "9997:9997"
+      - "9996:9996"
       - "8554:8554"  # RTSP (default port)
       - "8000:8000"
       - "8001:8001"
+      - "1236:1236"
       - "1935:1935"  # RTMP (default port)
       - "8888:8888"  # HLS (default port)
       - "8889:8889"  # WebRTC (default port)
