@@ -77,11 +77,14 @@ listeners.forEach((signal) => {
 
 const start = async () => {
     try {
-        await app.listen(parseInt(PORT, 10), ADDRESS);
-    } catch (error) {
-        app.log.error(error);
-        process.exit(1);
+      app.listen({ 
+        host: ADDRESS, 
+        port: parseInt(PORT, 10) 
+      })
+    } catch(error) {
+      app.log.error(error);
+      process.exit(1);
     }
-};
+  }
 
 start();
